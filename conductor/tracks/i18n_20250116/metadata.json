@@ -1,0 +1,19 @@
+{
+  "id": "i18n_20250116",
+  "title": "UI Localization (pt-BR)",
+  "type": "chore",
+  "status": "complete",
+  "created": "2025-01-16T16:30:00Z",
+  "updated": "2025-01-16T17:30:00Z",
+  "current_phase": 5,
+  "current_task": "5",
+  "phases": {
+    "total": 5,
+    "completed": 5
+  },
+  "tasks": {
+    "total": 5,
+    "completed": 5
+  },
+  "commits": []
+}

@@ -46,7 +46,7 @@ const StatCard: React.FC<{
           {trend && (
             <p className="flex items-center text-xs font-medium text-green-600 mt-2">
               <ArrowUpRight className="w-3 h-3 mr-1" />
-              {trend} from last month
+              {trend} em relação ao último mês
             </p>
           )}
         </div>
@@ -101,36 +101,36 @@ const Dashboard: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-slate-500">Overview of your laboratory inventory.</p>
+          <h1 className="text-2xl font-bold text-slate-900">Painel</h1>
+          <p className="text-slate-500">Visão geral do inventário do laboratório.</p>
         </div>
         <div className="flex items-center gap-2">
-           <span className="text-sm text-slate-500">Last updated: Just now</span>
+           <span className="text-sm text-slate-500">Última atualização: Agora mesmo</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
-          title="Total Catalog Items" 
+          title="Itens no Catálogo"
           value={stats.totalItems} 
           icon={Package} 
           color="blue"
           trend="+5%"
         />
         <StatCard 
-          title="Active Chemicals" 
+          title="Químicos Ativos"
           value={stats.totalChemicals} 
           icon={Droplets} 
           color="green"
         />
         <StatCard 
-          title="Expiring Soon" 
+          title="Vencendo em Breve"
           value={stats.expiringSoon} 
           icon={Clock} 
           color="amber"
         />
         <StatCard 
-          title="Low Stock Alerts" 
+          title="Estoque Baixo"
           value={stats.lowStock} 
           icon={AlertTriangle} 
           color="red"
@@ -140,7 +140,7 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Category Distribution Chart */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Inventory by Category</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Inventário por Categoria</h3>
           <div className="h-64">
              <ResponsiveContainer width="100%" height="100%">
                <PieChart>
@@ -174,25 +174,25 @@ const Dashboard: React.FC = () => {
 
         {/* Quick Actions / Recent Activity Placeholder */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">System Health</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Saúde do Sistema</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span className="text-sm font-medium text-slate-700">Database Integrity</span>
+                <span className="text-sm font-medium text-slate-700">Integridade do Banco de Dados</span>
               </div>
-              <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded">Healthy</span>
+              <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded">Saudável</span>
             </div>
              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                <span className="text-sm font-medium text-slate-700">Backup Status</span>
+                <span className="text-sm font-medium text-slate-700">Status do Backup</span>
               </div>
-              <span className="text-xs text-slate-500">Last backup: 2h ago</span>
+              <span className="text-xs text-slate-500">Último backup: 2h atrás</span>
             </div>
             <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-              <h4 className="text-sm font-semibold text-amber-800 mb-1">Pending Validation</h4>
-              <p className="text-xs text-amber-700">3 new batches require QA approval before use.</p>
+              <h4 className="text-sm font-semibold text-amber-800 mb-1">Validação Pendente</h4>
+              <p className="text-xs text-amber-700">3 novos lotes requerem aprovação de QA antes do uso.</p>
             </div>
           </div>
         </div>

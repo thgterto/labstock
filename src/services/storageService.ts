@@ -111,6 +111,21 @@ class StorageService {
     localStorage.setItem(STORAGE_KEYS.BATCHES, JSON.stringify(batches));
   }
 
+  updateBatch(updatedBatch: Batch) {
+    const batches = this.getBatches();
+    const index = batches.findIndex(b => b.id === updatedBatch.id);
+    if (index !== -1) {
+      batches[index] = updatedBatch;
+      localStorage.setItem(STORAGE_KEYS.BATCHES, JSON.stringify(batches));
+    }
+  }
+
+  deleteBatch(batchId: string) {
+    const batches = this.getBatches();
+    const filtered = batches.filter(b => b.id !== batchId);
+    localStorage.setItem(STORAGE_KEYS.BATCHES, JSON.stringify(filtered));
+  }
+
   // Helper to aggregate stock by catalog ID
   getInventorySummary() {
     const catalog = this.getCatalog();

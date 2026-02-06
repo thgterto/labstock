@@ -40,3 +40,11 @@ export interface AIAnalysisResult {
   description?: string;
   safetyNote?: string;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'manager';
+  initials: string;
+}

@@ -1,0 +1,19 @@
+{
+  "id": "batches_20250116",
+  "title": "Batch Management",
+  "type": "feature",
+  "status": "complete",
+  "created": "2025-01-16T10:00:00Z",
+  "updated": "2025-01-16T16:00:00Z",
+  "current_phase": 4,
+  "current_task": "4",
+  "phases": {
+    "total": 4,
+    "completed": 4
+  },
+  "tasks": {
+    "total": 4,
+    "completed": 4
+  },
+  "commits": []
+}
