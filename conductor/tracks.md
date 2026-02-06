@@ -6,3 +6,4 @@
 | [x] | auth_20250115 | User Authentication | 2025-01-15 |
 | [x] | batches_20250116 | Batch Management | 2025-01-16 |
 | [x] | i18n_20250116 | UI Localization (pt-BR) | 2025-01-16 |
+| [x] | dtos_20250117 | Formalize DTOs | 2025-01-17 |
