@@ -24,22 +24,9 @@ const Login: React.FC = () => {
     setError('');
     try {
       await login(username, password);
-      // Navigation is handled by useEffect or here if useEffect delay is undesirable,
-      // but useEffect is safer for "already logged in" check.
-      // However, after login(), isAuthenticated becomes true, triggering useEffect.
-      // But login() is async.
-      // Let's keep manual navigate here as well for immediate feedback?
-      // No, let's rely on state or explicit navigate.
-      // If I remove navigate from here, I rely on state update.
-      // But `login` waits for authService.
-      // Let's keep explicit navigate here to be sure, or just rely on useEffect?
-      // Since `login` is awaited, `setUser` is called. `isAuthenticated` changes. Effect runs.
-      // But `navigate` inside handleSubmit is faster if state update is batched/delayed?
-      // Actually, standard pattern is redirect if *already* authenticated (on mount).
-      // For form submission, we can navigate manually.
       navigate(from, { replace: true });
     } catch (err) {
-      setError('Invalid credentials');
+      setError('Credenciais inválidas');
     }
   };
 
@@ -50,8 +37,8 @@ const Login: React.FC = () => {
           <div className="bg-primary-500 p-3 rounded-xl mb-4">
              <Beaker className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900">Welcome Back</h2>
-          <p className="text-slate-500">Sign in to LabControl 2.0</p>
+          <h2 className="text-2xl font-bold text-slate-900">Bem-vindo de volta</h2>
+          <p className="text-slate-500">Faça login no LabControl 2.0</p>
         </div>
 
         {error && (
@@ -62,18 +49,18 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Username</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Usuário</label>
             <input
               type="text"
               required
               className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              placeholder="Enter your username"
+              placeholder="Digite seu usuário"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Senha</label>
             <input
               type="password"
               required
@@ -89,12 +76,12 @@ const Login: React.FC = () => {
             className="w-full bg-slate-900 text-white py-2.5 rounded-lg font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4" />
-            Sign In
+            Entrar
           </button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-400">
-          <p>Demo Credentials: admin / admin</p>
+          <p>Credenciais Demo: admin / admin</p>
         </div>
       </div>
     </div>

@@ -12,10 +12,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Beaker, label: 'Inventory', path: '/inventory' },
-    { icon: Package, label: 'Batches', path: '/batches' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: LayoutDashboard, label: 'Painel', path: '/' },
+    { icon: Beaker, label: 'Inventário', path: '/inventory' },
+    { icon: Package, label: 'Lotes', path: '/batches' },
+    { icon: Settings, label: 'Configurações', path: '/settings' },
   ];
 
   return (
@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight">LabControl</h1>
-            <p className="text-xs text-slate-400">Version 2.0.0-alpha</p>
+            <p className="text-xs text-slate-400">Versão 2.0.0-alpha</p>
           </div>
         </div>
 
@@ -70,8 +70,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                {user?.initials || 'U'}
              </div>
              <div className="flex-1 min-w-0">
-               <p className="text-sm font-medium truncate">{user?.name || 'Guest'}</p>
-               <p className="text-xs text-slate-500 truncate capitalize">{user?.role || 'Guest'}</p>
+               <p className="text-sm font-medium truncate">{user?.name || 'Visitante'}</p>
+               <p className="text-xs text-slate-500 truncate capitalize">{user?.role || 'Visitante'}</p>
              </div>
            </div>
 
@@ -80,7 +80,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
            >
              <LogOut className="w-4 h-4" />
-             Sign Out
+             Sair
            </button>
         </div>
       </aside>

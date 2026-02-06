@@ -25,11 +25,11 @@ const Batches: React.FC = () => {
   };
 
   const getCatalogItemName = (id: string) => {
-    return catalog.find(c => c.id === id)?.name || 'Unknown Item';
+    return catalog.find(c => c.id === id)?.name || 'Item Desconhecido';
   };
 
   const getLocationName = (id: string) => {
-    return locations.find(l => l.id === id)?.name || 'Unknown Location';
+    return locations.find(l => l.id === id)?.name || 'Local Desconhecido';
   };
 
   const filteredBatches = batches.filter(batch => {
@@ -40,7 +40,7 @@ const Batches: React.FC = () => {
   });
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this batch?')) {
+    if (confirm('Tem certeza que deseja excluir este lote?')) {
       db.deleteBatch(id);
       loadData();
     }
@@ -62,17 +62,17 @@ const Batches: React.FC = () => {
   };
 
   const handleConsume = (batch: Batch) => {
-    const amountStr = prompt(`Current Quantity: ${batch.quantity} ${batch.unit}\nHow much to consume?`);
+    const amountStr = prompt(`Quantidade Atual: ${batch.quantity} ${batch.unit}\nQuanto deseja consumir?`);
     if (!amountStr) return;
 
     const amount = parseFloat(amountStr);
     if (isNaN(amount) || amount <= 0) {
-      alert('Invalid amount');
+      alert('Quantidade inválida');
       return;
     }
 
     if (amount > batch.quantity) {
-      alert('Cannot consume more than available quantity');
+      alert('Não é possível consumir mais que a quantidade disponível');
       return;
     }
 
@@ -81,7 +81,7 @@ const Batches: React.FC = () => {
 
     if (newQuantity === 0) {
        // Ask if user wants to delete or keep as empty
-       if (confirm('Batch is empty. Delete it?')) {
+       if (confirm('O lote está vazio. Deseja excluí-lo?')) {
          db.deleteBatch(batch.id);
        } else {
          db.updateBatch(updatedBatch);
@@ -96,15 +96,15 @@ const Batches: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Batch Management</h1>
-          <p className="text-slate-500">Track inventory lots, expiry dates, and locations.</p>
+          <h1 className="text-2xl font-bold text-slate-900">Gerenciamento de Lotes</h1>
+          <p className="text-slate-500">Rastreie lotes de inventário, validades e localizações.</p>
         </div>
         <button
           className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors shadow-sm"
           onClick={handleAdd}
         >
           <Plus className="w-4 h-4" />
-          Add Batch
+          Adicionar Lote
         </button>
       </div>
 
@@ -113,7 +113,7 @@ const Batches: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by item name or lot number..."
+            placeholder="Buscar por nome do item ou número do lote..."
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -126,13 +126,13 @@ const Batches: React.FC = () => {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4 font-semibold text-slate-700">Item Name</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Lot Number</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Quantity</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Location</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Expiry Date</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Nome do Item</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Número do Lote</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Quantidade</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Localização</th>
+                <th className="px-6 py-4 font-semibold text-slate-700">Validade</th>
                 <th className="px-6 py-4 font-semibold text-slate-700">Status</th>
-                <th className="px-6 py-4 font-semibold text-slate-700 text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold text-slate-700 text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -163,28 +163,31 @@ const Batches: React.FC = () => {
                           batch.qaStatus === 'quarantine' ? 'bg-amber-100 text-amber-800' :
                           batch.qaStatus === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-800'}
                       `}>
-                        {batch.qaStatus}
+                        {batch.qaStatus === 'approved' ? 'Aprovado' :
+                         batch.qaStatus === 'quarantine' ? 'Quarentena' :
+                         batch.qaStatus === 'rejected' ? 'Rejeitado' :
+                         batch.qaStatus === 'expired' ? 'Vencido' : batch.qaStatus}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           className="p-1 text-slate-400 hover:text-green-600 transition-colors"
-                          title="Consume"
+                          title="Consumir"
                           onClick={() => handleConsume(batch)}
                         >
                           <MinusCircle className="w-4 h-4" />
                         </button>
                         <button
                           className="p-1 text-slate-400 hover:text-blue-600 transition-colors"
-                          title="Edit"
+                          title="Editar"
                           onClick={() => handleEdit(batch)}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           className="p-1 text-slate-400 hover:text-red-600 transition-colors"
-                          title="Delete"
+                          title="Excluir"
                           onClick={() => handleDelete(batch.id)}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -197,7 +200,7 @@ const Batches: React.FC = () => {
               {filteredBatches.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
-                    No batches found.
+                    Nenhum lote encontrado.
                   </td>
                 </tr>
               )}

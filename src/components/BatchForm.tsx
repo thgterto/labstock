@@ -61,7 +61,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
       <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <h3 className="text-lg font-semibold text-slate-900">
-            {initialBatch ? 'Edit Batch' : 'Receive New Batch'}
+            {initialBatch ? 'Editar Lote' : 'Receber Novo Lote'}
           </h3>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
             <X className="w-5 h-5" />
@@ -71,7 +71,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Catalog Item Selection */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Catalog Item</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Item do Catálogo</label>
             <select
               required
               className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
@@ -79,7 +79,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
               onChange={(e) => setFormData({...formData, catalogId: e.target.value})}
               disabled={!!initialBatch} // Prevent changing item on edit for simplicity
             >
-              <option value="">Select Item...</option>
+              <option value="">Selecione um Item...</option>
               {catalog.map(item => (
                 <option key={item.id} value={item.id}>{item.name} ({item.id})</option>
               ))}
@@ -89,7 +89,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
           <div className="grid grid-cols-2 gap-4">
             {/* Lot Number */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Lot Number</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Número do Lote</label>
               <input
                 type="text"
                 required
@@ -100,7 +100,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
             </div>
             {/* Expiry Date */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Expiry Date</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Validade</label>
               <div className="relative">
                 <input
                   type="date"
@@ -116,7 +116,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
           <div className="grid grid-cols-3 gap-4">
             {/* Quantity */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Quantidade</label>
               <input
                 type="number"
                 min="0"
@@ -129,7 +129,7 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
             </div>
             {/* Unit */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Unit</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Unidade</label>
               <select
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                 value={formData.unit}
@@ -139,36 +139,36 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
                 <option value="mL">mL</option>
                 <option value="g">g</option>
                 <option value="kg">kg</option>
-                <option value="units">units</option>
-                <option value="pcs">pcs</option>
+                <option value="units">unidades</option>
+                <option value="pcs">pçs</option>
               </select>
             </div>
             {/* QA Status */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">QA Status</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Status de QA</label>
               <select
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                 value={formData.qaStatus}
                 onChange={(e) => setFormData({...formData, qaStatus: e.target.value as Batch['qaStatus']})}
               >
-                <option value="quarantine">Quarantine</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-                <option value="expired">Expired</option>
+                <option value="quarantine">Quarentena</option>
+                <option value="approved">Aprovado</option>
+                <option value="rejected">Rejeitado</option>
+                <option value="expired">Vencido</option>
               </select>
             </div>
           </div>
 
           {/* Location */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Localização</label>
             <select
               required
               className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
               value={formData.locationId}
               onChange={(e) => setFormData({...formData, locationId: e.target.value})}
             >
-              <option value="">Select Location...</option>
+              <option value="">Selecione a Localização...</option>
               {locations.map(loc => (
                 <option key={loc.id} value={loc.id}>{loc.name} ({loc.code})</option>
               ))}
@@ -181,13 +181,13 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
             onClick={onClose}
             className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium"
           >
-            Cancel
+            Cancelar
           </button>
           <button
             onClick={handleSubmit}
             className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors"
           >
-            {initialBatch ? 'Update Batch' : 'Receive Batch'}
+            {initialBatch ? 'Atualizar Lote' : 'Receber Lote'}
           </button>
         </div>
       </div>
