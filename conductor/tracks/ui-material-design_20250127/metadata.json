@@ -1,0 +1,19 @@
+{
+  "id": "ui-material-design_20250127",
+  "title": "Material Design Migration",
+  "type": "refactor",
+  "status": "complete",
+  "created": "2025-01-27T12:00:00Z",
+  "updated": "2025-01-27T14:00:00Z",
+  "current_phase": 7,
+  "current_task": "5",
+  "phases": {
+    "total": 7,
+    "completed": 7
+  },
+  "tasks": {
+    "total": 5,
+    "completed": 5
+  },
+  "commits": []
+}

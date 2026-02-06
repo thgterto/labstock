@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, Beaker } from 'lucide-react';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  Typography,
+  Alert
+} from '@mui/material';
+import { Science as ScienceIcon } from '@mui/icons-material';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -31,60 +41,83 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-slate-200">
-        <div className="flex flex-col items-center mb-8">
-          <div className="bg-primary-500 p-3 rounded-xl mb-4">
-             <Beaker className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900">Bem-vindo de volta</h2>
-          <p className="text-slate-500">Faça login no LabControl 2.0</p>
-        </div>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'background.default'
+      }}
+    >
+      <Container maxWidth="xs">
+        <Card sx={{ boxShadow: 3, borderRadius: 3 }}>
+          <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 4 }}>
+            <Box sx={{
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              p: 1.5,
+              borderRadius: 2,
+              mb: 2
+            }}>
+               <ScienceIcon fontSize="large" />
+            </Box>
+            <Typography variant="h5" component="h1" gutterBottom fontWeight="bold">
+              Bem-vindo de volta
+            </Typography>
+            <Typography variant="body2" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
+              Faça login no LabControl 2.0
+            </Typography>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-6 text-center border border-red-100">
-            {error}
-          </div>
-        )}
+            {error && (
+              <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+                {error}
+              </Alert>
+            )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Usuário</label>
-            <input
-              type="text"
-              required
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              placeholder="Digite seu usuário"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Senha</label>
-            <input
-              type="password"
-              required
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+            <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Usuário"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Senha"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                sx={{ mt: 3, mb: 2, py: 1.5 }}
+              >
+                Entrar
+              </Button>
+            </Box>
 
-          <button
-            type="submit"
-            className="w-full bg-slate-900 text-white py-2.5 rounded-lg font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
-          >
-            <Lock className="w-4 h-4" />
-            Entrar
-          </button>
-        </form>
-
-        <div className="mt-6 text-center text-xs text-slate-400">
-          <p>Credenciais Demo: admin / admin</p>
-        </div>
-      </div>
-    </div>
+            <Typography variant="caption" color="text.disabled" sx={{ mt: 2 }}>
+              Credenciais Demo: admin / admin
+            </Typography>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   );
 };
 

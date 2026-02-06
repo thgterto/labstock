@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../services/storageService';
-import { CatalogItem, Batch } from '../types';
 import { 
-  AlertTriangle, 
-  Package, 
-  Droplets, 
-  Clock, 
-  ArrowUpRight 
-} from 'lucide-react';
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Typography,
+  Avatar,
+  Paper,
+  Stack,
+  Chip
+} from '@mui/material';
+import {
+  Science as ScienceIcon,
+  Inventory as InventoryIcon,
+  Event as EventIcon,
+  Warning as WarningIcon,
+  TrendingUp,
+  CheckCircle,
+  Backup
+} from '@mui/icons-material';
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
   PieChart, 
   Pie, 
-  Cell 
+  Cell,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip
 } from 'recharts';
 
 const COLORS = ['#0ea5e9', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6'];
@@ -28,33 +36,56 @@ const StatCard: React.FC<{
   value: string | number;
   icon: React.ElementType;
   trend?: string;
-  color: 'blue' | 'amber' | 'red' | 'green';
+  color: 'primary' | 'secondary' | 'error' | 'success' | 'warning';
 }> = ({ title, value, icon: Icon, trend, color }) => {
-  const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    amber: 'bg-amber-50 text-amber-600 border-amber-200',
-    red: 'bg-red-50 text-red-600 border-red-200',
-    green: 'bg-green-50 text-green-600 border-green-200',
+  const colorMap = {
+    primary: 'primary.main',
+    secondary: 'secondary.main',
+    error: 'error.main',
+    success: 'success.main',
+    warning: 'warning.main',
+  };
+
+  const bgcolorMap = {
+    primary: 'primary.light',
+    secondary: 'secondary.light',
+    error: 'error.light',
+    success: 'success.light',
+    warning: 'warning.light',
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{title}</p>
-          <h3 className="text-2xl font-bold text-slate-900 mt-2">{value}</h3>
+    <Card sx={{ height: '100%', borderRadius: 3, boxShadow: 1 }}>
+      <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <Box>
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            {title}
+          </Typography>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            {value}
+          </Typography>
           {trend && (
-            <p className="flex items-center text-xs font-medium text-green-600 mt-2">
-              <ArrowUpRight className="w-3 h-3 mr-1" />
-              {trend} em relação ao último mês
-            </p>
+            <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: 'success.main' }}>
+              <TrendingUp fontSize="small" />
+              <Typography variant="caption" fontWeight="medium">
+                {trend} em relação ao último mês
+              </Typography>
+            </Stack>
           )}
-        </div>
-        <div className={`p-3 rounded-lg border ${colorClasses[color]}`}>
-          <Icon className="w-6 h-6" />
-        </div>
-      </div>
-    </div>
+        </Box>
+        <Avatar
+            sx={{
+                bgcolor: bgcolorMap[color] || 'primary.light',
+                color: colorMap[color] || 'primary.main',
+                width: 48,
+                height: 48,
+                borderRadius: 2
+            }}
+        >
+          <Icon />
+        </Avatar>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -98,106 +129,126 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Painel</h1>
-          <p className="text-slate-500">Visão geral do inventário do laboratório.</p>
-        </div>
-        <div className="flex items-center gap-2">
-           <span className="text-sm text-slate-500">Última atualização: Agora mesmo</span>
-        </div>
-      </div>
+    <Container maxWidth="xl">
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box>
+            <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+              Painel
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Visão geral do inventário do laboratório.
+            </Typography>
+        </Box>
+        <Typography variant="caption" color="text.disabled">
+           Última atualização: Agora mesmo
+        </Typography>
+      </Box>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Itens no Catálogo"
-          value={stats.totalItems} 
-          icon={Package} 
-          color="blue"
-          trend="+5%"
-        />
-        <StatCard 
-          title="Químicos Ativos"
-          value={stats.totalChemicals} 
-          icon={Droplets} 
-          color="green"
-        />
-        <StatCard 
-          title="Vencendo em Breve"
-          value={stats.expiringSoon} 
-          icon={Clock} 
-          color="amber"
-        />
-        <StatCard 
-          title="Estoque Baixo"
-          value={stats.lowStock} 
-          icon={AlertTriangle} 
-          color="red"
-        />
-      </div>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard
+              title="Itens no Catálogo"
+              value={stats.totalItems}
+              icon={InventoryIcon}
+              color="primary"
+              trend="+5%"
+            />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard
+              title="Químicos Ativos"
+              value={stats.totalChemicals}
+              icon={ScienceIcon}
+              color="success"
+            />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard
+              title="Vencendo em Breve"
+              value={stats.expiringSoon}
+              icon={EventIcon}
+              color="warning"
+            />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard
+              title="Estoque Baixo"
+              value={stats.lowStock}
+              icon={WarningIcon}
+              color="error"
+            />
+        </Grid>
+      </Grid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <Grid container spacing={3}>
         {/* Category Distribution Chart */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Inventário por Categoria</h3>
-          <div className="h-64">
-             <ResponsiveContainer width="100%" height="100%">
-               <PieChart>
-                 <Pie
-                   data={categoryData}
-                   cx="50%"
-                   cy="50%"
-                   innerRadius={60}
-                   outerRadius={80}
-                   fill="#8884d8"
-                   paddingAngle={5}
-                   dataKey="value"
-                 >
-                   {categoryData.map((entry, index) => (
-                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                   ))}
-                 </Pie>
-                 <Tooltip />
-               </PieChart>
-             </ResponsiveContainer>
-          </div>
-          <div className="flex flex-wrap gap-4 justify-center mt-4">
-            {categoryData.map((entry, index) => (
-              <div key={entry.name} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                <span className="text-sm text-slate-600 capitalize">{entry.name.toLowerCase()}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Grid size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }} elevation={1}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>Inventário por Categoria</Typography>
+              <Box sx={{ height: 300, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                 <ResponsiveContainer width="100%" height="100%">
+                   <PieChart>
+                     <Pie
+                       data={categoryData}
+                       cx="50%"
+                       cy="50%"
+                       innerRadius={60}
+                       outerRadius={80}
+                       fill="#8884d8"
+                       paddingAngle={5}
+                       dataKey="value"
+                     >
+                       {categoryData.map((entry, index) => (
+                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                       ))}
+                     </Pie>
+                     <RechartsTooltip />
+                   </PieChart>
+                 </ResponsiveContainer>
+              </Box>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center', mt: 2 }}>
+                {categoryData.map((entry, index) => (
+                  <Box key={entry.name} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: COLORS[index % COLORS.length] }} />
+                    <Typography variant="caption" sx={{ textTransform: 'capitalize' }}>{entry.name.toLowerCase()}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Paper>
+        </Grid>
 
-        {/* Quick Actions / Recent Activity Placeholder */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Saúde do Sistema</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span className="text-sm font-medium text-slate-700">Integridade do Banco de Dados</span>
-              </div>
-              <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded">Saudável</span>
-            </div>
-             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                <span className="text-sm font-medium text-slate-700">Status do Backup</span>
-              </div>
-              <span className="text-xs text-slate-500">Último backup: 2h atrás</span>
-            </div>
-            <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-              <h4 className="text-sm font-semibold text-amber-800 mb-1">Validação Pendente</h4>
-              <p className="text-xs text-amber-700">3 novos lotes requerem aprovação de QA antes do uso.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        {/* System Health */}
+        <Grid size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }} elevation={1}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>Saúde do Sistema</Typography>
+              <Stack spacing={2}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, bgcolor: 'background.default', borderRadius: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <CheckCircle color="success" />
+                    <Typography variant="body2" fontWeight="medium">Integridade do Banco de Dados</Typography>
+                  </Box>
+                  <Chip label="Saudável" color="success" size="small" variant="outlined" />
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, bgcolor: 'background.default', borderRadius: 2 }}>
+                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Backup color="primary" />
+                    <Typography variant="body2" fontWeight="medium">Status do Backup</Typography>
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">Último backup: 2h atrás</Typography>
+                </Box>
+
+                <Box sx={{ p: 2, bgcolor: 'warning.light', borderRadius: 2, color: 'warning.dark' }}>
+                    <Typography variant="subtitle2" fontWeight="bold" gutterBottom>Validação Pendente</Typography>
+                    <Typography variant="caption">
+                        3 novos lotes requerem aprovação de QA antes do uso.
+                    </Typography>
+                </Box>
+              </Stack>
+            </Paper>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

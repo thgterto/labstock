@@ -1,15 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../services/storageService';
 import { CatalogItem } from '../types';
-import { 
-  Search, 
-  Plus, 
-  Filter, 
-  AlertOctagon,
-  Eye,
-  Edit2,
-  Trash2
-} from 'lucide-react';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  Chip,
+  Tooltip
+} from '@mui/material';
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  FilterList as FilterListIcon,
+  Edit as EditIcon,
+  Visibility as VisibilityIcon,
+  Delete as DeleteIcon,
+  Warning as WarningIcon
+} from '@mui/icons-material';
 import CatalogForm from '../components/CatalogForm';
 
 const Inventory: React.FC = () => {
@@ -66,134 +85,157 @@ const Inventory: React.FC = () => {
   );
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Catálogo de Inventário</h1>
-          <p className="text-slate-500">Gerencie suas definições de químicos e equipamentos.</p>
-        </div>
-        <button 
+    <Container maxWidth="xl">
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box>
+            <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+              Catálogo de Inventário
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Gerencie suas definições de químicos e equipamentos.
+            </Typography>
+        </Box>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
           onClick={handleAdd}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors shadow-sm"
+          sx={{ borderRadius: 2 }}
         >
-          <Plus className="w-4 h-4" />
           Adicionar Item
-        </button>
-      </div>
+        </Button>
+      </Box>
 
-      {/* Filters */}
-      <div className="flex gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Buscar por nome, CAS ou código..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <button className="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex items-center gap-2">
-          <Filter className="w-4 h-4" />
-          Filtros
-        </button>
-      </div>
+      <Paper sx={{ mb: 3, p: 2, borderRadius: 2 }} elevation={0} variant="outlined">
+        <Grid container spacing={2} alignItems="center">
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                <TextField
+                    fullWidth
+                    placeholder="Buscar por nome, CAS ou código..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon color="action" />
+                            </InputAdornment>
+                        ),
+                    }}
+                    size="small"
+                />
+            </Grid>
+            <Grid>
+                <Button startIcon={<FilterListIcon />} color="inherit">
+                    Filtros
+                </Button>
+            </Grid>
+        </Grid>
+      </Paper>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-6 py-4 font-semibold text-slate-700">Nome do Item</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">Categoria</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">CAS / Specs</th>
-                <th className="px-6 py-4 font-semibold text-slate-700">GHS</th>
-                <th className="px-6 py-4 font-semibold text-slate-700 text-right">Estoque Total</th>
-                <th className="px-6 py-4 font-semibold text-slate-700 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredItems.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-slate-900">{item.name}</div>
-                    <div className="text-xs text-slate-500">{item.id}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`
-                      inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                      ${item.category === 'CHEMICAL' ? 'bg-purple-100 text-purple-800' : 
-                        item.category === 'EQUIPMENT' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800'}
-                    `}>
-                      {item.category === 'CHEMICAL' ? 'Químico' :
-                       item.category === 'EQUIPMENT' ? 'Equipamento' :
-                       item.category === 'GLASSWARE' ? 'Vidraria' : item.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-600">
-                    {item.casNumber || item.molecularFormula || '-'}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-1">
+      <TableContainer component={Paper} elevation={0} variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Table sx={{ minWidth: 650 }} aria-label="inventory table">
+          <TableHead sx={{ bgcolor: 'grey.50' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Nome do Item</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Categoria</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>CAS / Specs</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>GHS</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 'bold' }}>Estoque Total</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 'bold' }}>Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredItems.map((item) => (
+              <TableRow
+                key={item.id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': { bgcolor: 'action.hover' } }}
+              >
+                <TableCell component="th" scope="row">
+                  <Typography variant="subtitle2" fontWeight="medium">{item.name}</Typography>
+                  <Typography variant="caption" color="text.secondary">{item.id}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    label={item.category === 'CHEMICAL' ? 'Químico' : item.category === 'EQUIPMENT' ? 'Equipamento' : item.category}
+                    size="small"
+                    color={item.category === 'CHEMICAL' ? 'secondary' : 'default'}
+                    variant={item.category === 'CHEMICAL' ? 'filled' : 'outlined'}
+                    sx={{ borderRadius: 1 }}
+                  />
+                </TableCell>
+                <TableCell>{item.casNumber || item.molecularFormula || '-'}</TableCell>
+                <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
                       {item.ghsPictograms?.length > 0 ? (
                         item.ghsPictograms.map((p: string) => (
-                          <span key={p} className="w-6 h-6 flex items-center justify-center bg-red-50 border border-red-200 rounded text-[10px] text-red-700 font-bold" title={p}>
-                            {p.replace('GHS','')}
-                          </span>
+                          <Tooltip key={p} title={p}>
+                              <Box
+                                component="span"
+                                sx={{
+                                    width: 24,
+                                    height: 24,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    bgcolor: 'error.50',
+                                    border: '1px solid',
+                                    borderColor: 'error.200',
+                                    color: 'error.main',
+                                    borderRadius: 0.5,
+                                    fontSize: 10,
+                                    fontWeight: 'bold'
+                                }}
+                              >
+                                {p.replace('GHS','')}
+                              </Box>
+                          </Tooltip>
                         ))
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <Typography variant="caption" color="text.disabled">-</Typography>
                       )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="font-medium text-slate-900">{item.totalQuantity} <span className="text-slate-500 text-xs font-normal">Unidades/L</span></div>
-                    {item.totalQuantity < item.minStockLevel && (
-                       <div className="text-xs text-red-600 flex items-center justify-end gap-1 mt-1">
-                         <AlertOctagon className="w-3 h-3" /> Estoque Baixo
-                       </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2">
-                        <button
-                            className="p-1 text-slate-400 hover:text-blue-600 transition-colors"
-                            title="Ver Detalhes"
-                            onClick={() => handleView(item)}
-                        >
-                            <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                            className="p-1 text-slate-400 hover:text-green-600 transition-colors"
-                            title="Editar"
-                            onClick={() => handleEdit(item)}
-                        >
-                            <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                            className="p-1 text-slate-400 hover:text-red-600 transition-colors"
-                            title="Excluir"
-                            onClick={() => handleDelete(item.id)}
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filteredItems.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                    </Box>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" fontWeight="medium">
+                    {item.totalQuantity} <Typography component="span" variant="caption" color="text.secondary">Unidades/L</Typography>
+                  </Typography>
+                  {item.totalQuantity < item.minStockLevel && (
+                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5, mt: 0.5, color: 'error.main' }}>
+                         <WarningIcon sx={{ fontSize: 14 }} />
+                         <Typography variant="caption" fontWeight="bold">Estoque Baixo</Typography>
+                       </Box>
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                    <Tooltip title="Ver Detalhes">
+                        <IconButton size="small" onClick={() => handleView(item)}>
+                            <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Editar">
+                        <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
+                            <EditIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Excluir">
+                        <IconButton size="small" color="error" onClick={() => handleDelete(item.id)}>
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+            {filteredItems.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
+                  <Typography variant="body1" color="text.secondary">
                     Nenhum item encontrado.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {isModalOpen && (
         <CatalogForm
@@ -203,7 +245,7 @@ const Inventory: React.FC = () => {
           readonly={isViewMode}
         />
       )}
-    </div>
+    </Container>
   );
 };
 

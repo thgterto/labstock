@@ -1,7 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../services/storageService';
 import { CatalogItem, Category } from '../types';
-import { X, FlaskConical } from 'lucide-react';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  Chip,
+  Box,
+  IconButton
+} from '@mui/material';
+import { Science as ScienceIcon, Close as CloseIcon, LocalPharmacy, Construction, Hardware } from '@mui/icons-material';
 
 interface CatalogFormProps {
   onClose: () => void;
@@ -64,150 +81,168 @@ const CatalogForm: React.FC<CatalogFormProps> = ({ onClose, onSave, initialItem,
   const AVAILABLE_GHS = ['GHS01', 'GHS02', 'GHS03', 'GHS04', 'GHS05', 'GHS06', 'GHS07', 'GHS08', 'GHS09'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 flex-shrink-0">
-          <h3 className="text-lg font-semibold text-slate-900">
-            {readonly ? 'Detalhes do Item' : initialItem ? 'Editar Item' : 'Adicionar Novo Item'}
-          </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Dialog
+        open={true}
+        onClose={onClose}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+            sx: { borderRadius: 3 }
+        }}
+    >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} component="div">
+            <Typography variant="h6" fontWeight="bold" component="div">
+                {readonly ? 'Detalhes do Item' : initialItem ? 'Editar Item' : 'Adicionar Novo Item'}
+            </Typography>
+            <IconButton onClick={onClose} aria-label="close">
+                <CloseIcon />
+            </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+            <Grid container spacing={3}>
+                <Grid size={{ xs: 12 }}>
+                    <TextField
+                        autoFocus={!readonly && !initialItem}
+                        margin="dense"
+                        id="name"
+                        label="Nome do Item"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={formData.name}
+                        onChange={(e) => handleChange('name', e.target.value)}
+                        disabled={readonly}
+                        required={!readonly}
+                    />
+                </Grid>
 
-        <div className="p-6 space-y-6 overflow-y-auto flex-grow">
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Nome do Item</label>
-            <input
-              type="text"
-              disabled={readonly}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500"
-              placeholder="ex: Acetona"
-              value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-            />
-          </div>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="category-label">Categoria</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            id="category"
+                            value={formData.category}
+                            label="Categoria"
+                            onChange={(e) => handleChange('category', e.target.value as Category)}
+                            disabled={readonly}
+                        >
+                            <MenuItem value="CHEMICAL"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><LocalPharmacy fontSize="small" /> Químico</Box></MenuItem>
+                            <MenuItem value="EQUIPMENT"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><Hardware fontSize="small" /> Equipamento</Box></MenuItem>
+                            <MenuItem value="GLASSWARE"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><ScienceIcon fontSize="small" /> Vidraria</Box></MenuItem>
+                            <MenuItem value="TOOL"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><Construction fontSize="small" /> Ferramenta</Box></MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-               <label className="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
-               <select
-                disabled={readonly}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500"
-                value={formData.category}
-                onChange={(e) => handleChange('category', e.target.value as Category)}
-               >
-                 <option value="CHEMICAL">Químico</option>
-                 <option value="EQUIPMENT">Equipamento</option>
-                 <option value="GLASSWARE">Vidraria</option>
-                 <option value="TOOL">Ferramenta</option>
-               </select>
-            </div>
-            <div>
-               <label className="block text-sm font-medium text-slate-700 mb-1">Estoque Mínimo</label>
-               <input
-                type="number"
-                disabled={readonly}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500"
-                value={formData.minStockLevel}
-                onChange={(e) => handleChange('minStockLevel', parseInt(e.target.value) || 0)}
-               />
-            </div>
-          </div>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                     <TextField
+                        margin="dense"
+                        id="minStock"
+                        label="Estoque Mínimo"
+                        type="number"
+                        fullWidth
+                        variant="outlined"
+                        value={formData.minStockLevel}
+                        onChange={(e) => handleChange('minStockLevel', parseInt(e.target.value) || 0)}
+                        disabled={readonly}
+                    />
+                </Grid>
 
-          {/* Chemical Specifics */}
-          {formData.category === 'CHEMICAL' && (
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-4">
-               <div className="flex items-center gap-2 mb-2">
-                 <FlaskConical className="w-4 h-4 text-slate-500" />
-                 <h4 className="text-sm font-semibold text-slate-700">Propriedades Químicas</h4>
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                 <div>
-                   <label className="block text-xs font-medium text-slate-500 mb-1">Número CAS</label>
-                   <input
-                    type="text"
-                    disabled={readonly}
-                    className="w-full rounded border border-slate-200 px-2 py-1 text-sm disabled:bg-slate-100"
-                    value={formData.casNumber || ''}
-                    onChange={(e) => handleChange('casNumber', e.target.value)}
-                   />
-                 </div>
-                 <div>
-                   <label className="block text-xs font-medium text-slate-500 mb-1">Fórmula</label>
-                   <input
-                    type="text"
-                    disabled={readonly}
-                    className="w-full rounded border border-slate-200 px-2 py-1 text-sm disabled:bg-slate-100"
-                    value={formData.molecularFormula || ''}
-                    onChange={(e) => handleChange('molecularFormula', e.target.value)}
-                   />
-                 </div>
-               </div>
+                {formData.category === 'CHEMICAL' && (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ p: 2, bgcolor: 'primary.50', borderRadius: 2, border: '1px solid', borderColor: 'primary.100' }}>
+                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                                <LocalPharmacy color="primary" fontSize="small" />
+                                <Typography variant="subtitle2" color="primary.main" fontWeight="bold">
+                                    Propriedades Químicas
+                                </Typography>
+                             </Box>
+                             <Grid container spacing={2}>
+                                <Grid size={{ xs: 6 }}>
+                                    <TextField
+                                        size="small"
+                                        label="Número CAS"
+                                        fullWidth
+                                        value={formData.casNumber || ''}
+                                        onChange={(e) => handleChange('casNumber', e.target.value)}
+                                        disabled={readonly}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6 }}>
+                                    <TextField
+                                        size="small"
+                                        label="Fórmula Molecular"
+                                        fullWidth
+                                        value={formData.molecularFormula || ''}
+                                        onChange={(e) => handleChange('molecularFormula', e.target.value)}
+                                        disabled={readonly}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12 }}>
+                                    <Typography variant="caption" display="block" gutterBottom sx={{ color: 'text.secondary', fontWeight: 'medium' }}>
+                                        Perigos GHS
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                        {readonly ? (
+                                            formData.ghsPictograms?.length ? (
+                                                formData.ghsPictograms.map(p => (
+                                                    <Chip
+                                                        key={p}
+                                                        label={p}
+                                                        color="error"
+                                                        variant="outlined"
+                                                        size="small"
+                                                        sx={{ fontWeight: 'bold' }}
+                                                    />
+                                                ))
+                                            ) : <Typography variant="caption" fontStyle="italic">Nenhum perigo detectado</Typography>
+                                        ) : (
+                                            AVAILABLE_GHS.map(p => (
+                                                <Chip
+                                                    key={p}
+                                                    label={p}
+                                                    clickable
+                                                    onClick={() => toggleGhsPictogram(p)}
+                                                    color={formData.ghsPictograms?.includes(p) ? 'error' : 'default'}
+                                                    variant={formData.ghsPictograms?.includes(p) ? 'filled' : 'outlined'}
+                                                />
+                                            ))
+                                        )}
+                                    </Box>
+                                </Grid>
+                             </Grid>
+                        </Box>
+                    </Grid>
+                )}
 
-               <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-1">Perigos Detectados (GHS)</label>
-                  <div className="flex flex-wrap gap-2 min-h-[32px] p-2 bg-white border border-slate-200 rounded">
-                    {readonly ? (
-                        formData.ghsPictograms?.length ? (
-                          formData.ghsPictograms.map(p => (
-                             <span key={p} className="bg-red-50 text-red-700 text-xs px-2 py-1 rounded border border-red-100 font-medium">
-                               {p}
-                             </span>
-                          ))
-                        ) : <span className="text-xs text-slate-400 italic">Nenhum perigo detectado</span>
-                    ) : (
-                        AVAILABLE_GHS.map(p => (
-                            <button
-                                key={p}
-                                type="button"
-                                onClick={() => toggleGhsPictogram(p)}
-                                className={`text-xs px-2 py-1 rounded border font-medium transition-colors ${
-                                    formData.ghsPictograms?.includes(p)
-                                    ? 'bg-red-50 text-red-700 border-red-200 ring-1 ring-red-200'
-                                    : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
-                                }`}
-                            >
-                                {p}
-                            </button>
-                        ))
-                    )}
-                  </div>
-               </div>
-            </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Descrição</label>
-            <textarea
-              disabled={readonly}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none h-24 disabled:bg-slate-100 disabled:text-slate-500"
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-            ></textarea>
-          </div>
-        </div>
-
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 flex-shrink-0">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium"
-          >
-            {readonly ? 'Fechar' : 'Cancelar'}
-          </button>
-          {!readonly && (
-            <button
-                onClick={handleSubmit}
-                disabled={!formData.name}
-                className="bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors"
-            >
-                {initialItem ? 'Salvar Alterações' : 'Salvar Item'}
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+                <Grid size={{ xs: 12 }}>
+                    <TextField
+                        margin="dense"
+                        id="description"
+                        label="Descrição"
+                        multiline
+                        rows={3}
+                        fullWidth
+                        variant="outlined"
+                        value={formData.description}
+                        onChange={(e) => handleChange('description', e.target.value)}
+                        disabled={readonly}
+                    />
+                </Grid>
+            </Grid>
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+            <Button onClick={onClose} color="inherit">
+                {readonly ? 'Fechar' : 'Cancelar'}
+            </Button>
+            {!readonly && (
+                <Button onClick={handleSubmit} variant="contained" disabled={!formData.name}>
+                    {initialItem ? 'Salvar Alterações' : 'Salvar Item'}
+                </Button>
+            )}
+        </DialogActions>
+    </Dialog>
   );
 };
 

@@ -7,6 +7,8 @@ import Batches from './pages/Batches';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme';
 
 // Placeholder components for routes not fully implemented in this demo
 const SettingsPlaceholder = () => (
@@ -18,29 +20,32 @@ const SettingsPlaceholder = () => (
 
 const App: React.FC = () => {
   return (
-    <HashRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="*"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/batches" element={<Batches />} />
-                    <Route path="/settings" element={<SettingsPlaceholder />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </AuthProvider>
-    </HashRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <HashRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/inventory" element={<Inventory />} />
+                      <Route path="/batches" element={<Batches />} />
+                      <Route path="/settings" element={<SettingsPlaceholder />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </AuthProvider>
+      </HashRouter>
+    </ThemeProvider>
   );
 };
 
