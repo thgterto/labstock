@@ -1,0 +1,19 @@
+{
+  "id": "auth_20250115",
+  "title": "User Authentication",
+  "type": "feature",
+  "status": "complete",
+  "created": "2025-01-15T10:00:00Z",
+  "updated": "2025-01-15T14:30:00Z",
+  "current_phase": 4,
+  "current_task": "4",
+  "phases": {
+    "total": 4,
+    "completed": 4
+  },
+  "tasks": {
+    "total": 4,
+    "completed": 4
+  },
+  "commits": []
+}

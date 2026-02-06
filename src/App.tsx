@@ -3,6 +3,9 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
 // Placeholder components for routes not fully implemented in this demo
 const BatchesPlaceholder = () => (
@@ -22,15 +25,27 @@ const SettingsPlaceholder = () => (
 const App: React.FC = () => {
   return (
     <HashRouter>
-      <Layout>
+      <AuthProvider>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/batches" element={<BatchesPlaceholder />} />
-          <Route path="/settings" element={<SettingsPlaceholder />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="*"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/inventory" element={<Inventory />} />
+                    <Route path="/batches" element={<BatchesPlaceholder />} />
+                    <Route path="/settings" element={<SettingsPlaceholder />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-      </Layout>
+      </AuthProvider>
     </HashRouter>
   );
 };

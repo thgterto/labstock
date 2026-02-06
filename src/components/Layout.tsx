@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Beaker, Package, Settings, Menu, X, Activity } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { LayoutDashboard, Beaker, Package, Settings, Menu, Activity, LogOut } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const { user, logout } = useAuth();
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
@@ -31,8 +33,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out
         lg:translate-x-0 lg:static lg:inset-auto
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        flex flex-col
       `}>
-        <div className="flex items-center gap-3 p-6 border-b border-slate-800">
+        <div className="flex items-center gap-3 p-6 border-b border-slate-800 flex-shrink-0">
           <div className="bg-primary-500 p-2 rounded-lg">
             <Activity className="w-6 h-6 text-white" />
           </div>
@@ -42,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        <nav className="p-4 space-y-2 mt-4">
+        <nav className="p-4 space-y-2 mt-4 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -61,23 +64,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           ))}
         </nav>
         
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-slate-800">
-           <div className="flex items-center gap-3">
+        <div className="p-6 border-t border-slate-800 flex-shrink-0">
+           <div className="flex items-center gap-3 mb-4">
              <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold">
-               JD
+               {user?.initials || 'U'}
              </div>
              <div className="flex-1 min-w-0">
-               <p className="text-sm font-medium truncate">Jane Doe</p>
-               <p className="text-xs text-slate-500 truncate">Lab Manager</p>
+               <p className="text-sm font-medium truncate">{user?.name || 'Guest'}</p>
+               <p className="text-xs text-slate-500 truncate capitalize">{user?.role || 'Guest'}</p>
              </div>
            </div>
+
+           <button
+             onClick={logout}
+             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+           >
+             <LogOut className="w-4 h-4" />
+             Sign Out
+           </button>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 lg:px-8">
+        <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 lg:px-8 flex-shrink-0">
           <button 
             className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg"
             onClick={() => setIsSidebarOpen(true)}
