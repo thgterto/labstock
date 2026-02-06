@@ -1,0 +1,19 @@
+{
+  "id": "catalog-enhancement_20250127",
+  "title": "Catalog Enhancement",
+  "type": "feature",
+  "status": "complete",
+  "created": "2025-01-27T10:00:00Z",
+  "updated": "2025-01-27T11:00:00Z",
+  "current_phase": 6,
+  "current_task": "4",
+  "phases": {
+    "total": 6,
+    "completed": 6
+  },
+  "tasks": {
+    "total": 4,
+    "completed": 4
+  },
+  "commits": []
+}
