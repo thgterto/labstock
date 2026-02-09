@@ -4,17 +4,12 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Batches from './pages/Batches';
+import Settings from './pages/Settings';
+import History from './pages/History';
+import StorageMatrix from './pages/StorageMatrix';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
-
-// Placeholder components for routes not fully implemented in this demo
-const SettingsPlaceholder = () => (
-  <div className="p-8 text-center text-slate-500">
-    <h2 className="text-xl font-semibold text-slate-700 mb-2">Configurações do Sistema</h2>
-    <p>Configure agendamentos de backup, funções de usuário e conexões de impressora aqui.</p>
-  </div>
-);
 
 const App: React.FC = () => {
   return (
@@ -31,7 +26,9 @@ const App: React.FC = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/batches" element={<Batches />} />
-                    <Route path="/settings" element={<SettingsPlaceholder />} />
+                    <Route path="/history" element={<History />} />
+                    <Route path="/matrix" element={<StorageMatrix />} />
+                    <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Layout>
