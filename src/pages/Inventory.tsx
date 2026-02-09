@@ -8,7 +8,9 @@ import {
   MoreHorizontal, 
   AlertOctagon, 
   FlaskConical,
-  X
+  X,
+  Edit2,
+  Trash2
 } from 'lucide-react';
 
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -33,6 +35,7 @@ const Inventory: React.FC = () => {
     ghsHazards: [],
     description: '',
   });
+  const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
 
   useEffect(() => {
     loadItems();
@@ -43,16 +46,36 @@ const Inventory: React.FC = () => {
     setItems(data);
   };
 
+  const handleEdit = (item: CatalogItem) => {
+    setNewItem(item);
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm('Deseja excluir este item permanentemente?')) {
+      db.deleteCatalogItem(id);
+      loadItems();
+    }
+  };
+
   const handleSave = () => {
     if (!newItem.name) return;
-    const item: CatalogItem = {
-      ...newItem,
-      id: `CAT-${Date.now()}`,
-    } as CatalogItem;
+
+    if (editingItem) {
+      const updatedItem = { ...newItem, id: editingItem.id } as CatalogItem;
+      db.updateCatalogItem(updatedItem);
+    } else {
+      const item: CatalogItem = {
+        ...newItem,
+        id: `CAT-${Date.now()}`,
+      } as CatalogItem;
+      db.addCatalogItem(item);
+    }
     
-    db.addCatalogItem(item);
     setIsModalOpen(false);
     setNewItem({ name: '', category: 'CHEMICAL', minStockLevel: 0, ghsPictograms: [], ghsHazards: [] });
+    setEditingItem(null);
     loadItems();
   };
 
@@ -70,7 +93,11 @@ const Inventory: React.FC = () => {
           <p className="text-slate-500">Gerencie suas definições de químicos e equipamentos.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setNewItem({ name: '', category: 'CHEMICAL', minStockLevel: 0, ghsPictograms: [], ghsHazards: [] });
+            setEditingItem(null);
+            setIsModalOpen(true);
+          }}
           className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
@@ -151,9 +178,22 @@ const Inventory: React.FC = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-slate-400 hover:text-slate-600">
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="p-1 text-slate-400 hover:text-primary-600 transition-colors"
+                        title="Editar"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="p-1 text-slate-400 hover:text-red-600 transition-colors"
+                        title="Excluir"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -174,7 +214,9 @@ const Inventory: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 className="text-lg font-semibold text-slate-900">Adicionar Novo Item</h3>
+              <h3 className="text-lg font-semibold text-slate-900">
+                {editingItem ? 'Editar Item' : 'Adicionar Novo Item'}
+              </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
@@ -283,7 +325,7 @@ const Inventory: React.FC = () => {
                 disabled={!newItem.name}
                 className="bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors"
               >
-                Salvar Item
+                {editingItem ? 'Salvar Alterações' : 'Salvar Item'}
               </button>
             </div>
           </div>
