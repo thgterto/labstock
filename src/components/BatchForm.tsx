@@ -71,8 +71,9 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Catalog Item Selection */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Item do Catálogo</label>
+            <label htmlFor="catalogId" className="block text-sm font-medium text-slate-700 mb-1">Item do Catálogo</label>
             <select
+              id="catalogId"
               required
               className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
               value={formData.catalogId}
@@ -89,8 +90,9 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
           <div className="grid grid-cols-2 gap-4">
             {/* Lot Number */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Número do Lote</label>
+              <label htmlFor="lotNumber" className="block text-sm font-medium text-slate-700 mb-1">Número do Lote</label>
               <input
+                id="lotNumber"
                 type="text"
                 required
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
@@ -100,9 +102,10 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
             </div>
             {/* Expiry Date */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Validade</label>
+              <label htmlFor="expiryDate" className="block text-sm font-medium text-slate-700 mb-1">Validade</label>
               <div className="relative">
                 <input
+                  id="expiryDate"
                   type="date"
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none pl-10"
                   value={expiryDateString}
@@ -116,8 +119,9 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
           <div className="grid grid-cols-3 gap-4">
             {/* Quantity */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Quantidade</label>
+              <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-1">Quantidade</label>
               <input
+                id="quantity"
                 type="number"
                 min="0"
                 step="any"
@@ -129,8 +133,9 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
             </div>
             {/* Unit */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Unidade</label>
+              <label htmlFor="unit" className="block text-sm font-medium text-slate-700 mb-1">Unidade</label>
               <select
+                id="unit"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                 value={formData.unit}
                 onChange={(e) => setFormData({...formData, unit: e.target.value})}
@@ -145,8 +150,9 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
             </div>
             {/* QA Status */}
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Status de QA</label>
+              <label htmlFor="qaStatus" className="block text-sm font-medium text-slate-700 mb-1">Status de QA</label>
               <select
+                id="qaStatus"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                 value={formData.qaStatus}
                 onChange={(e) => setFormData({...formData, qaStatus: e.target.value as Batch['qaStatus']})}
@@ -161,8 +167,9 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
 
           {/* Location */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Localização</label>
+            <label htmlFor="locationId" className="block text-sm font-medium text-slate-700 mb-1">Localização</label>
             <select
+              id="locationId"
               required
               className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
               value={formData.locationId}

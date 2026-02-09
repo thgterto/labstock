@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
       b => b.expiryDate && (b.expiryDate - now < thirtyDays) && b.expiryDate > now
     ).length;
 
-    const inventory = db.getInventorySummary();
+    const inventory = db.getInventorySummary(catalog, batches);
     const lowStock = inventory.filter(i => (i.totalQuantity || 0) < i.minStockLevel).length;
 
     // Chart Data

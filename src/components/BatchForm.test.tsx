@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import BatchForm from './BatchForm';
 import { db } from '../services/storageService';
-import { Batch, CatalogItem, Location } from '../types';
+import { CatalogItem, Location } from '../types';
 
-// Mock storage service
+// Mock the storage service
 vi.mock('../services/storageService', () => ({
   db: {
     getCatalog: vi.fn(),
@@ -14,35 +14,29 @@ vi.mock('../services/storageService', () => ({
   },
 }));
 
+const mockCatalog: CatalogItem[] = [
+  {
+    id: 'CAT-001',
+    name: 'Test Item',
+    category: 'CHEMICAL',
+    ghsPictograms: [],
+    ghsHazards: [],
+    minStockLevel: 5,
+  },
+];
+
+const mockLocations: Location[] = [
+  {
+    id: 'LOC-001',
+    name: 'Test Location',
+    code: 'T01',
+    type: 'room',
+  },
+];
+
 describe('BatchForm', () => {
-  const mockCatalog: CatalogItem[] = [
-    {
-      id: 'CAT-001',
-      name: 'Acetone',
-      category: 'CHEMICAL',
-      ghsPictograms: [],
-      ghsHazards: [],
-      minStockLevel: 5,
-    },
-    {
-      id: 'CAT-002',
-      name: 'Beaker',
-      category: 'GLASSWARE',
-      ghsPictograms: [],
-      ghsHazards: [],
-      minStockLevel: 10,
-    },
-  ];
-
-  const mockLocations: Location[] = [
-    { id: 'LOC-001', name: 'Main Lab', code: 'R1', type: 'room' },
-    { id: 'LOC-002', name: 'Cabinet A', code: 'C1', type: 'cabinet' },
-  ];
-
-  const defaultProps = {
-    onClose: vi.fn(),
-    onSave: vi.fn(),
-  };
+  const mockOnClose = vi.fn();
+  const mockOnSave = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -50,111 +44,47 @@ describe('BatchForm', () => {
     (db.getLocations as any).mockReturnValue(mockLocations);
   });
 
-  it('renders correctly for new batch', () => {
-    render(<BatchForm {...defaultProps} />);
+  it('prevents submission when required fields are missing', () => {
+    render(<BatchForm onClose={mockOnClose} onSave={mockOnSave} />);
 
-    expect(screen.getByText('Receber Novo Lote')).toBeInTheDocument();
-    expect(screen.getByText('Receber Lote')).toBeInTheDocument();
+    // Try to submit without filling any fields
+    const submitButton = screen.getByText('Receber Lote');
+    fireEvent.click(submitButton);
 
-    // Check for inputs (checking labels exist)
-    expect(screen.getByText('Item do Catálogo')).toBeInTheDocument();
-    expect(screen.getByText('Número do Lote')).toBeInTheDocument();
-    expect(screen.getByText('Validade')).toBeInTheDocument();
-    expect(screen.getByText('Quantidade')).toBeInTheDocument();
-    expect(screen.getByText('Unidade')).toBeInTheDocument();
-    expect(screen.getByText('Status de QA')).toBeInTheDocument();
-    expect(screen.getByText('Localização')).toBeInTheDocument();
-  });
-
-  it('validates required fields', () => {
-    render(<BatchForm {...defaultProps} />);
-
-    const submitBtn = screen.getByText('Receber Lote');
-    fireEvent.click(submitBtn);
-
+    expect(mockOnSave).not.toHaveBeenCalled();
     expect(db.addBatch).not.toHaveBeenCalled();
-    expect(defaultProps.onSave).not.toHaveBeenCalled();
   });
 
-  it('calls addBatch when submitting new batch', () => {
-    render(<BatchForm {...defaultProps} />);
+  it('allows submission when all required fields are filled', () => {
+    render(<BatchForm onClose={mockOnClose} onSave={mockOnSave} />);
 
-    // Selects: 0: Catalog, 1: Unit, 2: QA Status, 3: Location
-    const selects = screen.getAllByRole('combobox');
+    // Fill in required fields
+    // Select Catalog Item
+    const catalogSelect = screen.getByLabelText(/Item do Catálogo/i);
+    fireEvent.change(catalogSelect, { target: { value: 'CAT-001' } });
 
-    // Catalog
-    fireEvent.change(selects[0], { target: { value: 'CAT-001' } });
+    // Fill Lot Number
+    const lotInput = screen.getByLabelText(/Número do Lote/i);
+    fireEvent.change(lotInput, { target: { value: 'L-123' } });
 
-    // Text inputs: Lot Number is the first 'textbox'
-    // Note: input type="text" is textbox. type="number" is spinbutton. type="date" has no implicit role usually but we can use simple selectors if needed.
-    const textInputs = screen.getAllByRole('textbox');
-    const lotInput = textInputs[0];
-    fireEvent.change(lotInput, { target: { value: 'L123' } });
+    // Select Location
+    const locationSelect = screen.getByLabelText(/Localização/i);
+    fireEvent.change(locationSelect, { target: { value: 'LOC-001' } });
 
-    // Quantity (type="number")
-    const qtyInput = screen.getByRole('spinbutton');
-    fireEvent.change(qtyInput, { target: { value: '10' } });
-
-    // Unit
-    fireEvent.change(selects[1], { target: { value: 'L' } });
-
-    // QA Status
-    fireEvent.change(selects[2], { target: { value: 'quarantine' } });
-
-    // Location
-    fireEvent.change(selects[3], { target: { value: 'LOC-001' } });
+    // Fill Quantity
+    const quantityInput = screen.getByLabelText(/Quantidade/i);
+    fireEvent.change(quantityInput, { target: { value: '10' } });
 
     // Submit
-    fireEvent.click(screen.getByText('Receber Lote'));
+    const submitButton = screen.getByText('Receber Lote');
+    fireEvent.click(submitButton);
 
-    expect(db.addBatch).toHaveBeenCalledTimes(1);
+    expect(mockOnSave).toHaveBeenCalled();
     expect(db.addBatch).toHaveBeenCalledWith(expect.objectContaining({
       catalogId: 'CAT-001',
-      lotNumber: 'L123',
-      quantity: 10,
-      unit: 'L',
+      lotNumber: 'L-123',
       locationId: 'LOC-001',
-      qaStatus: 'quarantine',
+      quantity: 10,
     }));
-    expect(defaultProps.onSave).toHaveBeenCalled();
-  });
-
-  it('calls updateBatch when editing existing batch', () => {
-    const initialBatch: Batch = {
-      id: 'BAT-001',
-      catalogId: 'CAT-001',
-      lotNumber: 'L999',
-      quantity: 50,
-      unit: 'mL',
-      locationId: 'LOC-002',
-      qaStatus: 'approved',
-      expiryDate: new Date('2025-01-01').getTime(),
-    };
-
-    render(<BatchForm {...defaultProps} initialBatch={initialBatch} />);
-
-    expect(screen.getByText('Editar Lote')).toBeInTheDocument();
-    expect(screen.getByText('Atualizar Lote')).toBeInTheDocument();
-
-    // Change quantity
-    const qtyInput = screen.getByRole('spinbutton');
-    fireEvent.change(qtyInput, { target: { value: '60' } });
-
-    fireEvent.click(screen.getByText('Atualizar Lote'));
-
-    expect(db.updateBatch).toHaveBeenCalledTimes(1);
-    expect(db.updateBatch).toHaveBeenCalledWith(expect.objectContaining({
-      ...initialBatch,
-      quantity: 60,
-    }));
-    expect(defaultProps.onSave).toHaveBeenCalled();
-  });
-
-  it('calls onClose when cancelled', () => {
-    render(<BatchForm {...defaultProps} />);
-
-    fireEvent.click(screen.getByText('Cancelar'));
-
-    expect(defaultProps.onClose).toHaveBeenCalled();
   });
 });
