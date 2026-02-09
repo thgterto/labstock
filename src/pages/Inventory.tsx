@@ -7,8 +7,17 @@ import {
   Filter, 
   MoreHorizontal, 
   AlertOctagon, 
-  FlaskConical
+  FlaskConical,
+  X
 } from 'lucide-react';
+
+const CATEGORY_LABELS: Record<Category, string> = {
+  CHEMICAL: 'Químico',
+  EQUIPMENT: 'Equipamento',
+  GLASSWARE: 'Vidraria',
+  TOOL: 'Ferramenta',
+  ADMINISTRATIVE: 'Administrativo'
+};
 
 const Inventory: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -114,9 +123,7 @@ const Inventory: React.FC = () => {
                       ${item.category === 'CHEMICAL' ? 'bg-purple-100 text-purple-800' : 
                         item.category === 'EQUIPMENT' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800'}
                     `}>
-                      {item.category === 'CHEMICAL' ? 'Químico' :
-                       item.category === 'EQUIPMENT' ? 'Equipamento' :
-                       item.category === 'GLASSWARE' ? 'Vidraria' : item.category}
+                      {CATEGORY_LABELS[item.category as Category] || item.category}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-slate-600">
@@ -194,10 +201,9 @@ const Inventory: React.FC = () => {
                     value={newItem.category}
                     onChange={(e) => setNewItem({...newItem, category: e.target.value as Category})}
                    >
-                     <option value="CHEMICAL">Químico</option>
-                     <option value="EQUIPMENT">Equipamento</option>
-                     <option value="GLASSWARE">Vidraria</option>
-                     <option value="TOOL">Ferramenta</option>
+                     {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                       <option key={key} value={key}>{label}</option>
+                     ))}
                    </select>
                 </div>
                 <div>
@@ -286,23 +292,5 @@ const Inventory: React.FC = () => {
     </div>
   );
 };
-
-// Simple Icon component for the modal close button since Lucide X was missing in scope of component
-const X = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-  </svg>
-);
 
 export default Inventory;

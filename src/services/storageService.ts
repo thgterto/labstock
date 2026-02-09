@@ -8,41 +8,41 @@ const STORAGE_KEYS = {
 
 // Initial Seed Data
 const INITIAL_LOCATIONS: Location[] = [
-  { id: 'LOC-001', name: 'Main Lab Room', code: 'R101', type: 'room' },
-  { id: 'LOC-002', name: 'Flammables Cabinet', code: 'CAB-FLM', type: 'cabinet' },
-  { id: 'LOC-003', name: 'Cold Storage -20C', code: 'FRZ-01', type: 'freezer' },
+  { id: 'LOC-001', name: 'Laboratório Principal', code: 'R101', type: 'room' },
+  { id: 'LOC-002', name: 'Armário de Inflamáveis', code: 'CAB-FLM', type: 'cabinet' },
+  { id: 'LOC-003', name: 'Câmara Fria -20C', code: 'FRZ-01', type: 'freezer' },
 ];
 
 const INITIAL_CATALOG: CatalogItem[] = [
   {
     id: 'CAT-001',
-    name: 'Acetone',
+    name: 'Acetona',
     category: 'CHEMICAL',
     casNumber: '67-64-1',
     molecularFormula: 'C3H6O',
     ghsPictograms: ['GHS02', 'GHS07'],
     ghsHazards: ['H225', 'H319', 'H336'],
-    description: 'Common organic solvent.',
+    description: 'Solvente orgânico comum.',
     minStockLevel: 5,
   },
   {
     id: 'CAT-002',
-    name: 'Sulfuric Acid',
+    name: 'Ácido Sulfúrico',
     category: 'CHEMICAL',
     casNumber: '7664-93-9',
     molecularFormula: 'H2SO4',
     ghsPictograms: ['GHS05'],
     ghsHazards: ['H314'],
-    description: 'Strong mineral acid.',
+    description: 'Ácido mineral forte.',
     minStockLevel: 2,
   },
   {
     id: 'CAT-003',
-    name: 'Beaker 500mL',
+    name: 'Béquer 500mL',
     category: 'GLASSWARE',
     ghsPictograms: [],
     ghsHazards: [],
-    description: 'Borosilicate glass beaker.',
+    description: 'Béquer de vidro de borossilicato.',
     minStockLevel: 10,
   }
 ];
