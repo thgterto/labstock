@@ -105,6 +105,23 @@ class StorageService {
     localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(items));
   }
 
+  updateCatalogItem(updatedItem: CatalogItem) {
+    const items = this.getCatalog();
+    const index = items.findIndex(i => i.id === updatedItem.id);
+    if (index !== -1) {
+      items[index] = updatedItem;
+      localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(items));
+      // this.logAction('update', 'item', `Atualizou item: ${updatedItem.name}`, 'Admin');
+    }
+  }
+
+  deleteCatalogItem(itemId: string) {
+    const items = this.getCatalog();
+    const filtered = items.filter(i => i.id !== itemId);
+    localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(filtered));
+    // Optional: Check if associated batches exist before deleting
+  }
+
   addBatch(batch: Batch) {
     const batches = this.getBatches();
     batches.push(batch);
