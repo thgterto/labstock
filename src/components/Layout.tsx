@@ -1,7 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Beaker, Package, Settings, Menu, Activity, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Beaker,
+  Package,
+  Settings,
+  Menu,
+  Activity,
+  LogOut,
+  History,
+  Grid3X3
+} from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,6 +25,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { icon: LayoutDashboard, label: 'Painel', path: '/' },
     { icon: Beaker, label: 'Inventário', path: '/inventory' },
     { icon: Package, label: 'Lotes', path: '/batches' },
+    { icon: Grid3X3, label: 'Matriz', path: '/matrix' },
+    { icon: History, label: 'Histórico', path: '/history' },
     { icon: Settings, label: 'Configurações', path: '/settings' },
   ];
 

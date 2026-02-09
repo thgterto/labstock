@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../services/storageService';
-import { CatalogItem, Batch } from '../types';
+import { CatalogItem, Category } from '../types';
 import { 
   AlertTriangle, 
   Package, 
@@ -9,19 +9,22 @@ import {
   ArrowUpRight 
 } from 'lucide-react';
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
   PieChart, 
   Pie, 
-  Cell 
+  Cell,
+  Tooltip,
+  ResponsiveContainer
 } from 'recharts';
 
 const COLORS = ['#0ea5e9', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6'];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  CHEMICAL: 'Químico',
+  EQUIPMENT: 'Equipamento',
+  GLASSWARE: 'Vidraria',
+  TOOL: 'Ferramenta',
+  ADMINISTRATIVE: 'Administrativo'
+};
 
 const StatCard: React.FC<{
   title: string;
@@ -87,7 +90,10 @@ const Dashboard: React.FC = () => {
       return acc;
     }, {} as Record<string, number>);
 
-    setCategoryData(Object.entries(cats).map(([name, value]) => ({ name, value })));
+    setCategoryData(Object.entries(cats).map(([name, value]) => ({
+      name: CATEGORY_LABELS[name] || name,
+      value
+    })));
 
     setStats({
       totalItems: catalog.length,
@@ -166,7 +172,7 @@ const Dashboard: React.FC = () => {
             {categoryData.map((entry, index) => (
               <div key={entry.name} className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                <span className="text-sm text-slate-600 capitalize">{entry.name.toLowerCase()}</span>
+                <span className="text-sm text-slate-600 capitalize">{entry.name}</span>
               </div>
             ))}
           </div>
