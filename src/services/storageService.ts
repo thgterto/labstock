@@ -127,12 +127,12 @@ class StorageService {
   }
 
   // Helper to aggregate stock by catalog ID
-  getInventorySummary() {
-    const catalog = this.getCatalog();
-    const batches = this.getBatches();
+  getInventorySummary(catalog?: CatalogItem[], batches?: Batch[]) {
+    const items = catalog || this.getCatalog();
+    const allBatches = batches || this.getBatches();
     
-    return catalog.map(item => {
-      const itemBatches = batches.filter(b => b.catalogId === item.id);
+    return items.map(item => {
+      const itemBatches = allBatches.filter(b => b.catalogId === item.id);
       const totalQuantity = itemBatches.reduce((sum, b) => sum + b.quantity, 0);
       return {
         ...item,
