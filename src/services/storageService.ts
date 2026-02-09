@@ -1,19 +1,19 @@
 import { CatalogItem, Batch, Location, Category } from '../types';
 
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   CATALOG: 'labcontrol_catalog',
   BATCHES: 'labcontrol_batches',
   LOCATIONS: 'labcontrol_locations',
 };
 
 // Initial Seed Data
-const INITIAL_LOCATIONS: Location[] = [
+export const INITIAL_LOCATIONS: Location[] = [
   { id: 'LOC-001', name: 'Laboratório Principal', code: 'R101', type: 'room' },
   { id: 'LOC-002', name: 'Armário de Inflamáveis', code: 'CAB-FLM', type: 'cabinet' },
   { id: 'LOC-003', name: 'Câmara Fria -20C', code: 'FRZ-01', type: 'freezer' },
 ];
 
-const INITIAL_CATALOG: CatalogItem[] = [
+export const INITIAL_CATALOG: CatalogItem[] = [
   {
     id: 'CAT-001',
     name: 'Acetona',
@@ -47,7 +47,7 @@ const INITIAL_CATALOG: CatalogItem[] = [
   }
 ];
 
-const INITIAL_BATCHES: Batch[] = [
+export const INITIAL_BATCHES: Batch[] = [
   {
     id: 'BAT-001',
     catalogId: 'CAT-001',
@@ -70,7 +70,7 @@ const INITIAL_BATCHES: Batch[] = [
   }
 ];
 
-class StorageService {
+export class StorageService {
   constructor() {
     this.init();
   }
