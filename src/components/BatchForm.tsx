@@ -181,22 +181,23 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
               ))}
             </select>
           </div>
-        </form>
 
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors"
-          >
-            {initialBatch ? 'Atualizar Lote' : 'Receber Lote'}
-          </button>
-        </div>
+          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors"
+            >
+              {initialBatch ? 'Atualizar Lote' : 'Receber Lote'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

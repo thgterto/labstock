@@ -8,7 +8,9 @@ import {
   MoreHorizontal, 
   AlertOctagon, 
   FlaskConical,
-  X
+  X,
+  Edit2,
+  Trash2
 } from 'lucide-react';
 
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -23,6 +25,7 @@ const Inventory: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
   
   // Form State
   const [newItem, setNewItem] = useState<Partial<CatalogItem>>({
@@ -45,15 +48,44 @@ const Inventory: React.FC = () => {
 
   const handleSave = () => {
     if (!newItem.name) return;
-    const item: CatalogItem = {
-      ...newItem,
-      id: `CAT-${Date.now()}`,
-    } as CatalogItem;
     
-    db.addCatalogItem(item);
+    if (editingItem) {
+      const item: CatalogItem = {
+        ...newItem,
+        id: editingItem.id,
+      } as CatalogItem;
+      db.updateCatalogItem(item);
+    } else {
+      const item: CatalogItem = {
+        ...newItem,
+        id: `CAT-${Date.now()}`,
+      } as CatalogItem;
+      db.addCatalogItem(item);
+    }
+
     setIsModalOpen(false);
     setNewItem({ name: '', category: 'CHEMICAL', minStockLevel: 0, ghsPictograms: [], ghsHazards: [] });
+    setEditingItem(null);
     loadItems();
+  };
+
+  const handleEdit = (item: CatalogItem) => {
+    setNewItem(item);
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este item?')) {
+      db.deleteCatalogItem(id);
+      loadItems();
+    }
+  };
+
+  const handleOpenModal = () => {
+    setEditingItem(null);
+    setNewItem({ name: '', category: 'CHEMICAL', minStockLevel: 0, ghsPictograms: [], ghsHazards: [] });
+    setIsModalOpen(true);
   };
 
   const filteredItems = items.filter(item => 
@@ -70,7 +102,7 @@ const Inventory: React.FC = () => {
           <p className="text-slate-500">Gerencie suas definições de químicos e equipamentos.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleOpenModal}
           className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
@@ -151,9 +183,22 @@ const Inventory: React.FC = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-slate-400 hover:text-slate-600">
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="text-slate-400 hover:text-blue-600 p-1"
+                        title="Editar"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="text-slate-400 hover:text-red-600 p-1"
+                        title="Excluir"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -174,7 +219,9 @@ const Inventory: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 className="text-lg font-semibold text-slate-900">Adicionar Novo Item</h3>
+              <h3 className="text-lg font-semibold text-slate-900">
+                {editingItem ? 'Editar Item' : 'Adicionar Novo Item'}
+              </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
