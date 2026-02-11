@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/storageService';
 import { Batch, CatalogItem, Location } from '../types';
 import { Plus, Search, Filter, Trash2, Edit2, AlertCircle, TestTube, MinusCircle } from 'lucide-react';
@@ -24,12 +24,26 @@ const Batches: React.FC = () => {
     setLocations(db.getLocations());
   };
 
+  const catalogMap = useMemo(() => {
+    return catalog.reduce((acc, item) => {
+      acc[item.id] = item;
+      return acc;
+    }, {} as Record<string, CatalogItem>);
+  }, [catalog]);
+
+  const locationMap = useMemo(() => {
+    return locations.reduce((acc, loc) => {
+      acc[loc.id] = loc;
+      return acc;
+    }, {} as Record<string, Location>);
+  }, [locations]);
+
   const getCatalogItemName = (id: string) => {
-    return catalog.find(c => c.id === id)?.name || 'Item Desconhecido';
+    return catalogMap[id]?.name || 'Item Desconhecido';
   };
 
   const getLocationName = (id: string) => {
-    return locations.find(l => l.id === id)?.name || 'Local Desconhecido';
+    return locationMap[id]?.name || 'Local Desconhecido';
   };
 
   const filteredBatches = batches.filter(batch => {

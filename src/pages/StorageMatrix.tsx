@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/storageService';
 import { Location, Batch, CatalogItem } from '../types';
 import {
@@ -22,6 +22,13 @@ const StorageMatrix: React.FC = () => {
     setCatalog(db.getCatalog());
   }, []);
 
+  const catalogMap = useMemo(() => {
+    return catalog.reduce((acc, item) => {
+      acc[item.id] = item;
+      return acc;
+    }, {} as Record<string, CatalogItem>);
+  }, [catalog]);
+
   const getLocationIcon = (type: Location['type']) => {
     switch (type) {
       case 'freezer': return <Snowflake className="w-5 h-5 text-blue-500" />;
@@ -36,7 +43,7 @@ const StorageMatrix: React.FC = () => {
   };
 
   const getItemName = (catalogId: string) => {
-    return catalog.find(c => c.id === catalogId)?.name || 'Item Desconhecido';
+    return catalogMap[catalogId]?.name || 'Item Desconhecido';
   };
 
   // Mock grid capacity for demo purposes

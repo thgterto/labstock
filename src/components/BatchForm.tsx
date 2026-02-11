@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../services/storageService';
-import { Batch, CatalogItem, Location } from '../types';
+import { Batch, CatalogItem, Location, BATCH_UNITS, BatchUnit } from '../types';
 import { X, Calendar, Package } from 'lucide-react';
 
 interface BatchFormProps {
@@ -138,14 +138,11 @@ const BatchForm: React.FC<BatchFormProps> = ({ onClose, onSave, initialBatch }) 
                 id="unit"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                 value={formData.unit}
-                onChange={(e) => setFormData({...formData, unit: e.target.value})}
+                onChange={(e) => setFormData({...formData, unit: e.target.value as BatchUnit})}
               >
-                <option value="L">L</option>
-                <option value="mL">mL</option>
-                <option value="g">g</option>
-                <option value="kg">kg</option>
-                <option value="units">unidades</option>
-                <option value="pcs">pçs</option>
+                {BATCH_UNITS.map((unit) => (
+                  <option key={unit.value} value={unit.value}>{unit.label}</option>
+                ))}
               </select>
             </div>
             {/* QA Status */}
